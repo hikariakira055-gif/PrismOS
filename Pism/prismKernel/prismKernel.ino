@@ -1,30 +1,81 @@
 #include <LiquidCrystal.h>
+#include <math.h>
 
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 /*const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);*/
 
-char aff[3][3] = {"INS", "PA1", "PA2"};
+char aff[4][3] = {"INS", "PA1", "PA2", "PIN"};
 
-int nuber_of_diigt(int __template__){
+//--------------------------------------------------------------
+
+static int number_of_digit(int __template__){
+
+  int iterator = 1;
+
+  while(__template__ > 1){
+    __template__ = __template__ / 10;
+    iterator++;
+  }
+
+  return (iterator);
+
+}
+
+
+static int power(int a, int b){
+
+  int summ = 1;
+
+  for (int i = 0; i < b; i++){
+    summ *= a;
+  }
+
+  return (summ);
   
 }
 
 int bit_to_dec(int binary){
-  int __int__ = 0;
-  int __t_number = 0;
 
-  for (int i = 0; i < 4; i++){
-    __t_number = (binary >> i);
-    __t_number = (__t_number&1);
-    __int__ = __int__ + (__t_number * (int)pow(2, i));
+  int __int__ = 0;
+  float __t_number = 0;
+  int __int_t__ = 0;
+  int auxiliary_number = 0;
+  int tmp = 0;
+  __t_number = binary;
+  for (int i = 0; i < number_of_digit(binary); i++){
+    __t_number /= 10;
+    
+    auxiliary_number = (int)__t_number;
+
+    printf("%f - %d = %f --> *10 = %f\n", __t_number, auxiliary_number, (__t_number - auxiliary_number), (__t_number - auxiliary_number)*10);
+
+    tmp = (__t_number - auxiliary_number)*10 + 0.1;
+
+    if(tmp < 0.6){
+      __int__ = 0;
+    }else{
+      __int__ = 1;
+    }
+    
+
+    printf("i - %d\n", __int__);
+    
+    __int_t__ = __int_t__ + (__int__ *  (power(2, i)));
+
+    printf("(%d * 2 ^ %d = %d)\n", __int__, i, (__int__ * (power(2, i))));   
+
+    __t_number = auxiliary_number;
+    
   }
 
-  return (__int__);
+  return (__int_t__);
 
 }
 
+
+//------------------------------------------------------------------
 
 
 //-------Screen and logiciel manipulation
@@ -93,7 +144,7 @@ void loop() {
 
   if(a0() == 1){
     delay(250);
-    if(it != 2){ 
+    if(it != 3){ 
       
       it++;
     }else{
@@ -105,6 +156,9 @@ void loop() {
 
   if(a0() == 5){ // select W_MODE
     delay(250);
+
+
+
 
   }
  
@@ -173,6 +227,8 @@ void loop() {
       
     }
 
+
+  }else if(it == 3){ // execute
 
   }
 
