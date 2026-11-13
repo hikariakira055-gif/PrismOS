@@ -135,8 +135,11 @@ int ins_digit = 0;
 int pa1_digit = 0;
 int pa2_digit = 0;
 
-int ITM[16][64];
-int RAM[10][16];
+int RAM[64];
+int ITM[64][3];
+
+int ITM_ID = 0;
+int tmp_itm = 0;
 
 void loop() {
   
@@ -157,8 +160,13 @@ void loop() {
   if(a0() == 5){ // select W_MODE
     delay(250);
 
+    ITM[ITM_ID][0] = ins;
+    ITM[ITM_ID][1] = pa1;
+    ITM[ITM_ID][2] = pa2;
 
+    ITM_ID++;
 
+    lcd.clear();
 
   }
  
@@ -181,7 +189,7 @@ void loop() {
       ins_digit++;
       
     }
-
+    
 
   }
   else if(it == 1){
@@ -204,7 +212,7 @@ void loop() {
         pa1_digit++;
         
       }
-
+     
   }
   else if(it == 2){
    
@@ -226,9 +234,38 @@ void loop() {
       pa2_digit++;
       
     }
-
+    
 
   }else if(it == 3){ // execute
+
+    if(a0() == 4){ // clear the section
+      delay(250);
+      
+      lcd.clear();
+    }
+
+    if(a0() == 2 && tmp_itm < 64){ // up
+      tmp_itm++;
+      delay(500);
+      lcd.clear();
+      
+    } else if(a0() == 3 && tmp_itm > 0){ // down
+      tmp_itm--;
+      delay(500);
+      lcd.clear();
+    }
+
+    lcd.setCursor(0, 1);
+    lcd.print(tmp_itm);
+
+    lcd.setCursor(3, 1);
+    lcd.print(bit_to_dec(ITM[tmp_itm][0]));
+
+    lcd.setCursor(7, 1);
+    lcd.print(bit_to_dec(ITM[tmp_itm][1]));
+
+    lcd.setCursor(11, 1);
+    lcd.print(bit_to_dec(ITM[tmp_itm][2]));
 
   }
 
